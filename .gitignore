@@ -1,67 +1,43 @@
-# Dependencies
-node_modules/
-.pnpm-store/
-.yarn/
-.yarn-cache/
+# Proyectos generados por usuarios
+projects/
+work/
 
-# Build outputs
-dist/
-build/
-out/
-.next/
-.vite/
-.cache/
-
-# Environment & secrets
-.env
-.env.*
-!.env.example
-*.key
-*.pem
-*.p12
-credentials.json
-secrets/
-
-# OS / editor
-.DS_Store
-Thumbs.db
-*.swp
-.vscode/
-.idea/
-
-# Python artifacts
+# Python
 __pycache__/
-*.pyc
 .venv/
 .pytest_cache/
+*.pyc
 
-# Large binaries / models
+# Modelos grandes (opcional incluir en LFS)
+*.onnx
+models/
+
+# Assets generados temporalmente
+avatar_4f/
+assets/imagenoteca/
+
+# Repositorios embebidos (submodules externos)
+stickman-video-director/
+youtube-mcp/
+
+# State y cachés de runtime
+state/
 *.onnx
 *.onnx.json
-*.bin
-*.gguf
-*.pt
-*.pth
 
-# Logs
+# Secretos e historial local
+.env
+*.env.local
+
+# Node
+node_modules/
+dist/
 *.log
-logs/
-state/logs/
 
-# Test artifacts
-coverage/
-playwright-report/
-test-results/
+# Docker
+.dockerignore
 
-# Tool caches
-.freebuff/
-.kilo/node_modules/
-node_modules/.cache/
-
-# Project runtime data (not product)
-projects/
-state/
-models/
-assets/documentary/
-vibe_images/
-avatar_4f/
+# Sistema operativo
+.DS_Store
+Thumbs.db
+stickman-video-director/

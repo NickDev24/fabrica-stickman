@@ -1,17 +1,25 @@
 import { create } from "zustand";
+import { getFactoryState, getEpisodes, FactoryState, Episode } from "./api";
+
 export type Cfg = { key: string; value: string };
 interface S {
   cfg: Cfg[];
   progress: number;
+  factoryState: FactoryState | null;
+  episodes: Episode[];
   add: (c: Cfg) => void;
   bump: () => void;
   load: () => void;
+  fetchFactoryState: () => Promise<void>;
+  fetchEpisodes: () => Promise<void>;
 }
 const KEY = "fabrica.cfg.v1";
 const enc = new TextEncoder();
 export const useStore = create<S>((set) => ({
   cfg: [],
   progress: 0,
+  factoryState: null,
+  episodes: [],
   add: (c) =>
     set((s) => {
       const cfg = [...s.cfg, c];
@@ -26,6 +34,22 @@ export const useStore = create<S>((set) => ({
       const raw = localStorage.getItem(KEY);
       if (raw) set({ cfg: JSON.parse(raw) });
     } catch {}
+  },
+  fetchFactoryState: async () => {
+    try {
+      const state = await getFactoryState();
+      set({ factoryState: state, progress: state.progreso });
+    } catch (e) {
+      console.error("Error fetching factory state:", e);
+    }
+  },
+  fetchEpisodes: async () => {
+    try {
+      const episodes = await getEpisodes();
+      set({ episodes });
+    } catch (e) {
+      console.error("Error fetching episodes:", e);
+    }
   },
 }));
 

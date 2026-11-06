@@ -11,12 +11,13 @@
   },
   "scripts": {
     "dev:web": "pnpm --filter @fabrica/web dev",
-    "build": "pnpm --filter @fabrica/web build && pnpm --filter @nickdev24/fabrica-autonoma build && pnpm --filter @fabrica/agents-core build && pnpm --filter @fabrica/connectors build",
-    "test": "pnpm -r test",
+    "build": "pnpm --filter @fabrica/web build && pnpm --filter @nickdev24/fabrica-autonoma build",
+    "test": "cd pipeline && ../.venv/bin/python -m pytest tests -q",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "pnpm -r typecheck",
-    "docs:dev": "pnpm --filter docs dev",
-    "docs:build": "pnpm --filter docs build"
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "engines": {
     "node": ">=20.0.0",

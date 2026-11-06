@@ -1,148 +1,236 @@
-# 🏭 Fábrica Autónoma
+# 🏭 Fábrica Autónoma de Contenido
 
-[![CI](https://github.com/NickDev24/fabrica-stickman/actions/workflows/ci.yml/badge.svg)](https://github.com/NickDev24/fabrica-stickman/actions)
-[![npm](https://img.shields.io/npm/v/@nickdev24/fabrica-autonoma)](https://www.npmjs.com/package/@nickdev24/fabrica-autonoma)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> Una **fábrica autónoma de contenido** (videos stickman + cómics) con una **oficina 3D isométrica interactiva** donde los agentes autónomos gestionan la producción en tiempo real.
+> **Fábrica autónoma de contenido** (videos stickman + cómics) con una **oficina 3D isométrica interactiva** donde los agentes autónomos gestionan la producción en tiempo real.
 
-El frontend es una **oficina 3D completamente interactiva y animada**: cámara isométrica, agentes 3D que se mueven **según su tarea real en curso**, pantalla ganadora de la semana, y un panel de métricas en 3D. Todo con identidad visual propia (tinta negra + acento cálido `#FF5C35`).
+**Este es el backend completo de la fábrica original (Documentales-Generator) + un frontend 3D nuevo + CLI de instalación.**
 
-## ¿Cómo funciona la oficina 3D?
+## 🎯 Qué es
 
-La oficina no es un dashboard plano: es un espacio vivo donde los agentes se mueven y actúan según lo que está haciendo el pipeline.
+Una fábrica de contenido autónoma que genera:
+- **Videos documentales stickman** animados con motion blur, cámara cinemática, audio normalizado a -14 LUFS
+- **Cómics** con grillas de 3 bandas, cliffhangers y continuidad visual
+- **Publicación automática** a YouTube y Facebook vía Zernio
 
-- **Cuando el pipeline busca una idea**, 1–3 agentes se sitúan trabajando en internet (`searching` / `selecting`).
-- El **ganador** pasa a la pantalla principal (mobile-board) para dibujar.
-- La **pizarra de generación de imágenes** muestra las imágenes conforme se van creando, con carrusel automático y manual.
-- Cada **configuración** (MCP, nuevo proveedor IA, API, prompt) se comunica con un agente en modo **chat**; al terminar, cada usuario elige su propia cuenta.
-- Al finalizar, el usuario **selecciona/cierra su cuenta** en Gemini, Cloudflare, Workers AI, YouTube, Zernio, etc.
+El backend Python tiene:
+- Pipeline completo con LLMs (Mistral, Qwen, Bedrock, Gemini)
+- Generación de imágenes con Cloudflare Workers AI (Flux)
+- Síntesis de voz con Piper TTS
+- Renderizado con FFmpeg
+- Skills MCP para agentes especializados
+- Docker corriendo 24/7 (puerto 8610 API, 8611 Dashboard)
 
-| Estado del agente | Animación en 3D | ¿Qué hace el agente? |
-|---|---|---|
-| `idle` | quieto, rotando suavemente | En espera / bienvenida |
-| `searching` / `selecting` | se acerca a la estación de trabajo | Busca idea, compara, elige el ganador |
-| `creating` | bobeo suave en la pizarra | Genera imagen en la pantalla principal |
-| `done` | placa de bandera / celebración | Guarda la obra y notifica |
-| `error` | vibración de error (shake) | Reintenta o informa de error |
+El frontend 3D (React + Three.js) muestra:
+- Oficina isométrica con agentes animados
+- Estados reales del pipeline
+- Chat contextual con cada agente
+- Métricas en tiempo real
 
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
-npx NickDev24/fabrica-autonoma
+# Instalar con el CLI
+npx @nickdev24/fabrica-autonoma init
+
+# O clonar manualmente
+git clone https://github.com/NickDev24/fabrica-stickman.git
+cd fabrica-stickman
+
+# Configurar variables de entorno
+cp .env.example .env
+# Edita .env con tus API keys
+
+# Instalar dependencias Python
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# Instalar dependencias Node (frontend opcional)
+pnpm install
+
+# Levantar Docker (backend + dashboard)
+docker compose up -d --build
+
+# Abrir frontend 3D (opcional)
+pnpm dev:web
 ```
 
-## Architecture
+## 📁 Arquitectura
 
 ```
-apps/web        React 18 + Vite + Three.js / R3F (3D isometric oficina)
-packages/agents-core  Motor de diálogo (Nova, Kai, Luna, Zern) en YAML
-packages/connectors   OpenAI, Anthropic, Gemini, ElevenLabs, HeyGen, Runway, MCPs, Skills, Zernio
-apps/cli          fabrica-autonoma CLI (init / doctor / upgrade / export-env)
-docs            VitePress
+fabrica-stickman/
+├── pipeline/           # Pipeline de producción (guion, imagen, audio, render)
+├── factory/           # Motor de la fábrica (orquestador, stages, gates)
+├── tools/             # Herramientas de generación (sprites, masks, GLB)
+├── docker/            # Docker para factoryd (8610) y dashboard (8611)
+├── .agents/skills/    # 26 skills MCP especializados
+├── apps/
+│   ├── web/          # Frontend 3D (React + Three.js + Vite)
+│   └── cli/          # CLI de instalación (@nickdev24/fabrica-autonoma)
+├── state/            # Cachés, logs, estado persistente
+├── assets/           # Assets de personajes, imagenoteca, oficina 3D
+├── tests/            # 170 tests de regresión
+├── requirements.txt  # Dependencias Python
+├── docker-compose.yml # Orquestación Docker
+├── .env.example      # Template de variables de entorno
+├── CODEX.md          # Documentación técnica completa
+└── README.md         # Este archivo
 ```
 
-### Stack de la oficina 3D
+## 🔧 Configuración
 
-- **Three.js 0.187 + React Three Fiber + @react-three/drei** (cámara isométrica, OrbitControls, contact shadows, environment)
-- **GLTFLoader** carga los modelos 3D desde `assets/oficina3d/` (personajes `office-bomi`/`office-seo` + mobiliario `conference-table-v1`, `office-chair-v1`, `mobile-board-v1`, `pub-print-bench-v1`, `pub-workstation-v1`)
-- **Zustand + Context** (FactoryStore) — único estado fuente que mapea la tarea de cada agente al movimiento de su modelo 3D
-- **Identidad visual**: Space Grotesk + tinta `#111827`/`#0F172A` + acento cálido `#FF5C35`
+Edita `.env` con tus credenciales:
 
-### Patrón Chat-agente
+```bash
+# LLMs
+MISTRAL_API_KEY=your_key
+QWEN_API_KEY=your_key
+CLOUDFLARED_ACCOUNTS_ID=your_id
+CLOUDFLARED_WORKER_AI=your_token
 
-| Configuración | Agente que la gestiona | Cuenta final que selecciona |
-|---|---|---|
-| MCP (filesystem, fetch, playwright, github, memory, sequential-thinking) | **Kai** | — |
-| Proveedor IA (OpenAI/Anthropic/Gemini) | **Luna** | Gemini |
-| API (ElevenLabs/HeyGen/Runway/Stability) | **Nova** | — |
-| Skill / tarea personalizada | **Zern** | Zernio (TikTok/FB/IG/YT) |
-| Conector de video/cómic | **Zern** | Zernio |
+# Publicación
+TELEGRAM_TOKEN_BOT=your_token
+TELEGRAM_CHAT_ID=your_chat_id
+ZERNIO_API_KEY=your_key
+ZERNIO_ACCOUNT_ID=your_id
 
-## Features
+# Gemini (opcional, pago)
+GEMINI_API_KEY=your_key
+ALLOW_PAID_LLM=0
+ALLOW_REMOTE_LLM=1
+CF_MAX_IMAGENES_DIA=150
+```
 
-| Módulo | Descripción |
-|---|---|
-| **Oficina 3D isométrica** | Agentes 3D animados por tarea, métricas en 3D, cámara orientable |
-| **Agents Core** | 4 agentes autónomos (Nova, Kai, Luna, Zern) con YAML versionado y diálogo |
-| **Conectores** | OpenAI, Anthropic, Gemini, ElevenLabs, HeyGen, Runway, MCPs, Skills, Zernio |
-| **CLI** | `fabrica-autonoma` publicado (init / doctor / upgrade / export-env / validate-connectors) |
-| **Config inicial** | Onboarding conversacional por agente, export `.env`, persistencia cifrada (Web Crypto AES-GCM) |
+## 🏢 Frontend 3D
 
-## Roadmap
+El frontend se conecta al backend vía API (puerto 8610):
 
-Ver `ROADMAP.md`.
+- **Agentes animados**: Nova, Kai, Luna, Zern se mueven según el estado real del pipeline
+- **Estados visuales**: idle, searching, creating, done, error
+- **Cámara interactiva**: OrbitControls para explorar la oficina
+- **Chat contextual**: Conversa con cada agente para configurar el sistema
 
-## License
+Accede a: `http://localhost:5173` (desarrollo) o deployment estático.
+
+## 🐳 Docker
+
+```bash
+# Iniciar
+docker compose up -d --build
+
+# Ver logs
+docker compose logs -f
+
+# Detener
+docker compose down
+```
+
+- **pulso-factory**: API REST + WebSocket en puerto 8610
+- **pulso-dashboard**: Mission Control en puerto 8611
+
+## 🧪 Tests
+
+```bash
+# Ejecutar tests de backend
+.venv/bin/python -m pytest tests -q
+
+# Ver suite completa (170 tests)
+.venv/bin/python -m pytest tests -v
+```
+
+## 📖 Documentación
+
+- **CODEX.md**: Documentación técnica completa del backend
+- **FABRICA-DE-COMICS.md**: Diseño de la extensión de cómics
+- **ROADMAP.md**: Estado de desarrollo por fases
+- **DEPENDENCIAS.md**: Licencias de dependencias
+
+## � Demos
+
+### Videos Stickman
+- [Demo 1: Zombis - Día 1 del contagio](https://youtube.com/watch?v=yyuksUq4CyI) - 8 min 33 s
+- Más demos en canal [Pulso Humano Curioso](https://youtube.com/@PulsoHumanoCurioso)
+
+### Cómics
+- [Demo: Robo Gardner - 13 Obras](https://github.com/NickDev24/fabrica-stickman/tree/main/projects/robo-gardner-13-obras/comics) - 15 viñetas / 2 páginas
+- Formato: Grillas 3 bandas (3/3/3 + 2/2/2), cliffhangers, continuidad visual
+
+## 📚 Tutoriales Profesionales
+
+### Serie de Videos Explicativos
+Grabaciones de pantalla profesionales del repositorio, frontend y configuraciones:
+
+1. **Instalación Completa** (15 min)
+   - Instalación con CLI npx
+   - Configuración de .env
+   - Setup de Docker
+   - Verificación de dependencias
+
+2. **Frontend 3D** (10 min)
+   - Tour de la oficina isométrica
+   - Interacción con agentes
+   - Chat contextual
+   - Conexión con backend API
+
+3. **Backend Python** (20 min)
+   - Arquitectura del pipeline
+   - Ejecución de episodio completo
+   - Gates de QC
+   - Publicación automática
+
+4. **Cómics** (8 min)
+   - Extensión comics.v2
+   - Generación de viñetas
+   - Composición de grillas
+   - Exportación y QC
+
+5. **Troubleshooting** (12 min)
+   - Diagnóstico con CLI doctor
+   - Errores comunes
+   - Debug de API
+   - Logs Docker
+
+*Próximamente: Grabaciones en curso con Screenplay/OBS*
+
+## �🎨 Stack
+
+### Backend
+- Python 3.13
+- FFmpeg, Tesseract
+- aiohttp (REST + WebSocket)
+- Cloudflare Workers AI (Flux)
+- Piper TTS
+- Skills MCP
+
+### Frontend
+- React 18
+- Three.js 0.187
+- React Three Fiber
+- Vite
+- Zustand
+- Tailwind CSS
+
+## 📝 CLI
+
+```bash
+npx @nickdev24/fabrica-autonoma init    # Inicializar fábrica
+npx @nickdev24/fabrica-autonoma doctor  # Diagnóstico de entorno
+npx @nickdev24/fabrica-autonoma upgrade # Actualizar
+```
+
+## 🤝 Contribuyendo
+
+Este proyecto es una fábrica completa. Para contribuir:
+
+1. Lee CODEX.md primero
+2. Ejecuta los tests antes de cambios
+3. No rompas el backend por el frontend
+4. Documenta cambios en DEPENDENCIAS.md
+
+## 📄 Licencia
 
 MIT
 
 ---
 
-# 📖 Documentación para equipo y usuario (en español)
-
-## ¿Qué es esta oficina 3D?
-
-Es el **frontend principal** de la fábrica. En lugar de un tablero plano, hay una **oficina 3D isométrica** donde los agentes simulados (Nova, Kai, Luna, Zern) se mueven y actúan según lo que está haciendo el pipeline.
-
-## ¿Cómo se mueven los agentes?
-
-Cada agente tiene un **estado de tarea** que cambia conforme avanza la fabricación:
-
-| Estado | Animación en 3D | Acción del agente |
-|---|---|---|
-| `idle` | Rotación suave, quieto | En espera / bienvenida |
-| `searching` / `selecting` | Se acerca a la estación de trabajo | Busca idea en internet, compara, elige el ganador |
-| `creating` | Bobeo suave en la pizarra | Genera imagen en la pantalla principal |
-| `done` | Placa de bandera / celebración | Guarda la obra y notifica |
-| `error` | Vibración de error (shake) | Reintenta o informa de error |
-
-## ¿Qué ve el usuario?
-
-- **Fondo:** oficina isométrica con piso, mesa y silla.
-- **Piso de métricas:** pantalla ganadora de la semana (video stickman, cómics, agentes activos).
-- **Escritorio:** mesa de congreso, silla, escritorio móvil y pizarra de generación de imágenes.
-- **Pizarra principal:** muestra las imágenes generadas en un carrusel **automático o manual**.
-- **Agentes 3D:** personajes que caminan entre estaciones según su tarea.
-
-## Patrón Chat-Agente
-
-Cada configuración se comunica con un agente en modo conversacional:
-
-| Configuración | Agente | Cuenta final que elige el usuario |
-|---|---|---|
-| MCP (filesystem, fetch, playwright, github, memory, sequential-thinking) | Kai | — |
-| Proveedor IA (OpenAI, Anthropic, Gemini) | Luna | Gemini |
-| API (ElevenLabs, HeyGen, Runway, Stability) | Nova | — |
-| Skill / tarea personalizada | Zern | Zernio (TikTok, FB, IG, YT) |
-| Conector de video/cómic | Zern | Zernio |
-
-## Cuentas finales
-
-Al terminar la configuración, el usuario **selecciona y cierra su propia cuenta** redirigido a:
-
-- **Gemini**
-- **Cloudflare**
-- **Workers AI**
-- **YouTube**
-- **Zernio**
-- y demás proveedores disponibles.
-
-## Qué hace falta para verlo
-
-1. Tener el repositorio clonado.
-2. Ejecutar `pnpm install` en la raíz.
-3. Ejecutar `pnpm dev` (frontend en `localhost:5173`).
-
-## Qué hace falta para publicarlo
-
-- `pnpm build` para generar la versión de producción en `apps/web/dist`.
-- Subir `apps/web/dist` a cualquier hosting estático o a Cloudflare Pages.
-
-## Estado del proyecto
-
-- ✅ Frontend 3D listo y compilando.
-- ✅ Agents Core con diálogo.
-- ✅ Conectores (OpenAI, Anthropic, Gemini, ElevenLabs, HeyGen, Runway, MCPs, Skills, Zernio).
-- ✅ CLI públicable (`fabrica-autonoma`).
-- 📘 Documentación en `docs/` (VitePress).
+**Nota importante**: Este repositorio contiene el backend Python completo de la fábrica original. NO es una reimplementación ni un mock. El frontend 3D es una capa visual nueva sobre el backend existente.
