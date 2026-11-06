@@ -45,4 +45,16 @@ program.command("doctor").description("Diagnóstico del entorno").action(async (
   console.log("OK");
 });
 
+program.command("export-env").description("Exporta config .env").action(() => {
+  console.log("OPENAI_API_KEY=\nANTHROPIC_API_KEY=");
+});
+
+program.command("validate-connectors").description("Valida conectores").action(() => {
+  console.log("All connectors OK (mock)");
+});
+
+program.command("upgrade").description("Actualiza la fábrica").action(async () => {
+  await execa("npm", ["update", "-g", "@nickdev24/fabrica-autonoma"], { stdio: "inherit" });
+});
+
 program.parse();

@@ -50,8 +50,22 @@ export async function zernioOAuthStart(platform: ZernioPlatform): Promise<{ auth
   };
 }
 
+export * from "./oauth";
+
 export function exportEnv(config: Record<string, string>): string {
   return Object.entries(config)
     .map(([k, v]) => `${k}=${v}`)
     .join("\n") + "\n";
+}
+
+export async function scanMcpInstalled(): Promise<string[]> {
+  return ["filesystem", "fetch"];
+}
+
+export async function scanSkills(dirs: string[]): Promise<string[]> {
+  return dirs.flatMap(() => ["example-skill"]);
+}
+
+export async function installSkill(repo: string): Promise<{ ok: boolean; message: string }> {
+  return { ok: true, message: `Installed ${repo} (mock)` };
 }
