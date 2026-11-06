@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { getFactoryState, getEpisodes, FactoryState, Episode } from "./api";
+import { getFactoryState, getEpisodes } from "./api";
+import type { FactoryState, Episode } from "./api";
 
 export type Cfg = { key: string; value: string };
 interface S {

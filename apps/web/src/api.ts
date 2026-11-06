@@ -2,7 +2,7 @@
  * Cliente API para comunicarse con el backend factoryd (puerto 8610)
  */
 
-const API_BASE = process.env.VITE_API_BASE || "http://localhost:8610";
+const API_BASE = "http://localhost:8610";
 
 export interface FactoryState {
   estado: string;

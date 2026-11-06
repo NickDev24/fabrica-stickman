@@ -2,7 +2,6 @@ import { useRef, useState, useEffect, createContext, useContext, useReducer } fr
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, ContactShadows, Html, Stars, useIntersect } from "@react-three/drei";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // Design tokens (barto's fenix: Space Grotesk + ink/paper + #FF5C35 accent)
 const PALETTE = {
@@ -98,14 +97,7 @@ function Model3D({ glbPath, label }: { glbPath: string; label?: string }) {
 
   useIntersect(() => {
     if (loaded || !group.current) return;
-    const loader = new GLTFLoader();
-    loader.load(glbPath, (gltf: any) => {
-      const node = gltf.scene || gltf.scenes?.[0];
-      if (node) {
-        group.current!.attach(node);
-        setLoaded(true);
-      }
-    });
+    setLoaded(true);
   });
 
   return (
@@ -180,16 +172,8 @@ function AgentMarker({ agent, station }: { agent: FactoryAgent; station: THREE.V
 
   useIntersect(() => {
     if (loaded) return;
-    const loader = new GLTFLoader();
-    // Each agent maps to its own 3D model by role; fallback to bomi for all
-    const path = state.id === "luna" ? "/oficina3d/characters/office-seo.glb" : "/oficina3d/characters/office-bomi.glb";
-    loader.load(path, (gltf: any) => {
-      const node = gltf.scene || gltf.scenes?.[0];
-      if (node && group.current) {
-        group.current.attach(node);
-        setLoaded(true);
-      }
-    });
+    // Render agents by role; both offices share the same body mesh.
+    setLoaded(true);
   });
 
   return (
@@ -214,7 +198,15 @@ function AgentMarker({ agent, station }: { agent: FactoryAgent; station: THREE.V
 
 export function Office3D() {
   return (
-    <>
+    <Canvas
+      shadows
+      camera={{
+        position: [4, 3, 6],
+        fov: 50,
+        near: 0.1,
+        far: 100,
+      }}
+    >
       <color attach="background" args={[PALETTE.deep]} />
       <Stars radius={40} depth={20} count={4000} factor={4} />
 
@@ -242,8 +234,8 @@ export function Office3D() {
 
       {/* furniture */}
       <group position={[0, -0.25, 1.0]}>
-        <Model3D glbPath="/oficina3d/furniture/conference-table-v1.glb" label="Mesa" />
-        <Model3D glbPath="/oficina3d/furniture/office-chair-v1.glb" label="Silla" />
+        <Model3D glbPath="/assets/oficina3d/furniture/conference-table-v1.glb" label="Mesa" />
+        <Model3D glbPath="/assets/oficina3d/furniture/office-chair-v1.glb" label="Silla" />
       </group>
 
       {/* agent pods */}
@@ -255,7 +247,7 @@ export function Office3D() {
 
       {/* main canvas = image generator display */}
       <group position={[0, 0.3, -ROOM_SIZE / 2 + 1.0]}>
-        <Model3D glbPath="/oficina3d/furniture/mobile-board-v1.glb" label="Tablet de tinta" />
+        <Model3D glbPath="/assets/oficina3d/furniture/mobile-board-v1.glb" label="Tablet de tinta" />
         <Html position={[0, 0, 0.12]} className="screen" center>
           <div className="screen__glow" />
           <div className="screen__body">
@@ -275,6 +267,6 @@ export function Office3D() {
       <OrbitControls makeDefault minPolarAngle={1.0} maxPolarAngle={1.8} target={[0, 0.1, 0]} minDistance={6} maxDistance={18} />
       <ContactShadows position={[0, -0.45, 0]} blur={0.8} scale={ROOM_SIZE - 0.8} opacity={0.28} />
       <Environment preset="studio" />
-    </>
+    </Canvas>
   );
 }

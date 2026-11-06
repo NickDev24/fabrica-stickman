@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && npm run copy-assets && ./node_modules/.bin/vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prebuild": "mkdir -p dist/assets",
+    "copy-assets": "cp -rv ../../assets/oficina3d dist/assets/oficina3d"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
