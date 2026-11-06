@@ -1,0 +1,6 @@
+id: kai
+name: Kai
+role: APIs
+steps:
+  - {id: key, type: input, title: "API Key", body: "Pégala", inputKey: apiKey, inputType: secret}
+  - {id: done, type: complete, title: "OK", body: "Listo."}
