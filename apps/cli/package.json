@@ -1,0 +1,25 @@
+{
+  "name": "@nickdev24/fabrica-autonoma",
+  "version": "0.1.0",
+  "description": "Scaffold your autonomous content factory.",
+  "type": "module",
+  "bin": { "fabrica": "./dist/index.js", "fabrica-autonoma": "./dist/index.js" },
+  "files": ["dist", "templates"],
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "@clack/prompts": "^0.9.1",
+    "execa": "^9.4.0",
+    "degit": "^2.8.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "publishConfig": { "access": "public" }
+}

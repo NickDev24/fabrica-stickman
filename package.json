@@ -1,0 +1,30 @@
+{
+  "name": "fabrica-stickman",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Autonomous content factory with a 2D stickman office onboarding experience.",
+  "license": "MIT",
+  "author": "NickDev24 <facucercuetti420@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NickDev24/fabrica-stickman.git"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "pnpm --filter @fabrica/web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "pnpm -r typecheck",
+    "docs:dev": "pnpm --filter docs dev",
+    "docs:build": "pnpm --filter docs build"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.12.0"
+}

@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+.yarn-cache/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.vite/
+.cache/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+credentials.json
+secrets/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Python artifacts
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Large binaries / models
+*.onnx
+*.onnx.json
+*.bin
+*.gguf
+*.pt
+*.pth
+
+# Logs
+*.log
+logs/
+state/logs/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+
+# Tool caches
+.freebuff/
+.kilo/node_modules/
+node_modules/.cache/
+
+# Project runtime data (not product)
+projects/
+state/
+models/
+assets/documentary/
+vibe_images/
+avatar_4f/
