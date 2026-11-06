@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const StepSchema = z.object({
   id: z.string(),
-  type: z.enum(["info", "input", "action", "branch", "complete"]),
+  type: z.enum(["info", "input", "action", "select", "branch", "complete"]),
   agent: z.string(),
   title: z.string(),
   body: z.string(),

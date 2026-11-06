@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import http from "node:http";
 
 export function startOAuthProxy(port = 4321): http.Server {

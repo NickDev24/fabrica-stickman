@@ -9,13 +9,9 @@
     "type": "git",
     "url": "https://github.com/NickDev24/fabrica-stickman.git"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev:web": "pnpm --filter @fabrica/web dev",
-    "build": "pnpm -r build",
+    "build": "pnpm --filter @fabrica/web build && pnpm --filter @nickdev24/fabrica-autonoma build && pnpm --filter @fabrica/agents-core build && pnpm --filter @fabrica/connectors build",
     "test": "pnpm -r test",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "pnpm -r typecheck",
@@ -26,5 +22,8 @@
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@9.12.0"
+  "packageManager": "pnpm@9.12.0",
+  "devDependencies": {
+    "@types/three": "^0.187.0"
+  }
 }

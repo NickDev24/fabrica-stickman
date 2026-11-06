@@ -2,4 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-body { margin: 0; font-family: system-ui, sans-serif; }
+:root {
+  --color-ink: #111827;
+  --color-paper: #F5F1E8;
+  --color-accent: #FF5C35;
+  --color-deep: #0F172A;
+  --color-muted: #475569;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #0f172a;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* ── 3D isometric oficina overlays ── */
+.office3d-wrapper canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Metrics / winner monitor panel */
+.metrics-panel {
+  @apply text-white text-sm font-medium;
+}
+
+.metrics-panel__title {
+  @apply text-lg font-bold;
+}
+
+.metrics-panel .metric-row {
+  @apply mt-1 text-sm text-slate-300;
+}
+
+/* Agent 3D label chips */
+.label-chip {
+  @apply bg-[#111827] px-2 py-1 rounded text-xs text-white font-medium flex items-center gap-2 shadow-lg border border-[#334155];
+}
+
+.label-chip__dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.label-chip__role {
+  @apply text-[10px] text-slate-400 uppercase tracking-wider;
+}
+
+/* The main image-generator canvas display */
+.screen {
+  @apply w-full text-left;
+}
+
+.screen__glow {
+  @apply animate-pulse bg-[#FF5C35] h-2 w-3/4 rounded opacity-50;
+}
+
+.screen__body {
+  @apply p-2 bg-[#111827] rounded-lg text-white;
+}
+
+.screen__topbar {
+  @apply flex items-center justify-between mb-2 text-xs text-slate-400 uppercase tracking-wide;
+}
+
+.screen__pix {
+  @apply w-full h-auto bg-black rounded border border-[#334155] cursor-none;
+}
+
+.screen__bottom {
+  @apply flex items-center justify-between mt-2 text-xs text-slate-400;
+}
+
+.screen__progress {
+  @apply w-1/3 text-xs;
+}
+
+.screen__pulp {
+  @apply h-1 w-3/4 bg-slate-600 rounded;
+}
+
+/* Floating ink-pulp particles (ambient, very subtle) */
+.screen__pulp::before {
+  content: "";
+  @apply absolute w-1 h-1 bg-white rounded-full;
+}
+
+/* Reduced motion utilities */
+@media (prefers-reduced-motion: reduce) {
+  .screen__glow {
+    animation: none;
+  }
+}

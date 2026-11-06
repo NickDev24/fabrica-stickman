@@ -1,24 +1,43 @@
 import { z } from "zod";
+import { providerConfig as openaiConfig, probe as openaiProbe } from "./adapters/openai";
+import { providerConfig as anthropicConfig, probe as anthropicProbe } from "./adapters/anthropic";
+import { providerConfig as geminiConfig, probe as geminiProbe } from "./adapters/gemini";
+import { providerConfig as elevenlabsConfig, probe as elevenlabsProbe } from "./adapters/elevenlabs";
+import { providerConfig as heygenConfig, probe as heygenProbe } from "./adapters/heygen";
+import { providerConfig as runwayConfig, probe as runwayProbe } from "./adapters/runway";
+import { providerConfig as stabilityConfig, probe as stabilityProbe } from "./adapters/stability";
 
 export const ApiKeySchema = z.object({
   provider: z.enum(["openai", "anthropic", "gemini", "elevenlabs", "heygen", "runway", "stability"]),
   key: z.string().min(8),
 });
-
 export type ApiKey = z.infer<typeof ApiKeySchema>;
 
 export const PROVIDERS = [
-  { id: "openai", name: "OpenAI", doc: "https://platform.openai.com/api-keys", probe: "https://api.openai.com/v1/models" },
-  { id: "anthropic", name: "Anthropic", doc: "https://console.anthropic.com/settings/keys", probe: "https://api.anthropic.com/v1/messages" },
-  { id: "gemini", name: "Google Gemini", doc: "https://aistudio.google.com/app/apikey", probe: "https://generativelanguage.googleapis.com/v1beta/models" },
-  { id: "elevenlabs", name: "ElevenLabs", doc: "https://elevenlabs.io/app/settings/api-keys", probe: "https://api.elevenlabs.io/v1/user" },
-  { id: "heygen", name: "HeyGen", doc: "https://app.heygen.com/settings/api", probe: "https://api.heygen.com/v2/user/remaining_quota" },
-  { id: "runway", name: "Runway", doc: "https://dev.runwayml.com/", probe: "https://api.dev.runwayml.com/v1" },
-  { id: "stability", name: "Stability AI", doc: "https://platform.stability.ai/account/keys", probe: "https://api.stability.ai/v1/user/account" },
+  openaiConfig,
+  anthropicConfig,
+  geminiConfig,
+  elevenlabsConfig,
+  heygenConfig,
+  runwayConfig,
+  stabilityConfig,
 ] as const;
 
+// Per-provider probe functions, wired to the adapter modules.
+const adapters: Record<string, (key: string) => Promise<{ ok: boolean; message: string }>> = {
+  openai: openaiProbe,
+  anthropic: anthropicProbe,
+  gemini: geminiProbe,
+  elevenlabs: elevenlabsProbe,
+  heygen: heygenProbe,
+  runway: runwayProbe,
+  stability: stabilityProbe,
+};
+
 export async function probeProvider(provider: string, key: string): Promise<{ ok: boolean; message: string }> {
-  // Mock probe (real network calls wired per-adapter in production).
+  const adapter = adapters[provider];
+  if (adapter) return adapter(key);
+  // Unknown provider: fall back to the generic mock gate.
   if (!key || key.length < 8) return { ok: false, message: "Key too short" };
   return { ok: true, message: `${provider}: connection OK (mock)` };
 }
