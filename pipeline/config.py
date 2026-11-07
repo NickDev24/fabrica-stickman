@@ -167,17 +167,17 @@ def cloudflare_cfg() -> dict:
 # DEL LISTADO EXISTE (ver llm._habilitado): sin ALLOW_REMOTE_LLM los de nube se descartan
 # y queda el local; Gemini sólo aparece si ALLOW_PAID_LLM=1 y la tarea es premium.
 TASK_ROUTES = {
-    "default": ["cloudflare", "ollama"],
-    "investigacion": ["cloudflare", "ollama"],
+    "default": ["bedrock", "ollama"],
+    "investigacion": ["bedrock", "ollama"],
     # gpt-oss-120b (Bedrock, reasoning low, medido 1,3 s) respeta el tope de palabras:
     # llama-3.1-8b entregaba 2.000+ palabras en los 3 intentos de recorte y bloqueaba
     # toda la producción por gate de extensión (medido 2026-11-05, corrida red-proxy).
     "guion": ["bedrock", "cloudflare", "ollama"],
     # el que escribió el guion no puede ser el que lo valida
-    "verificacion": ["ollama", "cloudflare"],
-    "direccion": ["cloudflare", "ollama"],
-    "prompts_visuales": ["cloudflare", "ollama"],
-    "evaluacion": ["ollama", "cloudflare"],
+    "verificacion": ["bedrock", "ollama"],
+    "direccion": ["bedrock", "ollama"],
+    "prompts_visuales": ["bedrock", "ollama"],
+    "evaluacion": ["bedrock", "ollama"],
 }
 
 # Cada etapa se identifica con un `tag` (es lo que llega a llm.chat en la práctica). Esta
@@ -212,7 +212,7 @@ def tarea_para_tag(tag: str) -> str:
 
 LLM_CACHE_DIR = STATE / "llm_cache"
 LLM_CACHE_TTL_H = 24.0
-LLM_TIMEOUT_S = 120
+LLM_TIMEOUT_S = int(os.environ.get("LLM_TIMEOUT_S", "300"))
 # El modelo local corre en 2 núcleos: un timeout corto lo aborta a mitad de una respuesta
 # válida y uno de 10 min congela la fábrica. 240 s es el techo operativo; se puede bajar
 # con LLM_LOCAL_TIMEOUT_S si el equipo es más lento o se usa un modelo más grande.

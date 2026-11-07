@@ -27,7 +27,6 @@ state/
 
 # Build outputs (generados localmente antes de Docker)
 apps/web/dist/
-docker/dashboard/www/
 
 # Secretos e historial local
 .env

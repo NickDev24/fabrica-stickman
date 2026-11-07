@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { Office3D } from "./scenes/Office3DScene";
 import { useStore, exportEnv, seal } from "./store";
 
@@ -19,7 +18,6 @@ export default function App() {
   const [explain, setExplain] = React.useState(false);
   const [throttle, setThrottle] = React.useState(false);
   const [showCircular, setShowCircular] = React.useState(false);
-  const { t, i18n } = useTranslation();
 
   React.useEffect(() => {
     load();
@@ -38,16 +36,8 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-[#0f172a] text-white">
       <header className="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-[#0f172a]">
-        <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
-        <select
-          aria-label={t("language")}
-          value={i18n.language}
-          onChange={(e) => i18n.changeLanguage(e.target.value)}
-          className="bg-[#1e293b] text-white rounded px-2 py-1 text-sm"
-        >
-          <option value="es">ES</option>
-          <option value="en">EN</option>
-        </select>
+        <h1 className="text-lg font-bold tracking-tight">Fábrica Autónoma — Oficina 3D</h1>
+        <span className="text-sm text-slate-400">ES</span>
       </header>
 
       <main className="flex-1 p-4 flex flex-col items-center justify-center">
@@ -62,19 +52,19 @@ export default function App() {
             className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm"
             onClick={() => setShowCircular(true)}
           >
-            {t("circular.button")}
+            Abrir mesa redonda
           </button>
           <button
             className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm"
             onClick={() => setActive("nova")}
           >
-            {t("nova")}
+            Nova
           </button>
           <button
             className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm"
             onClick={() => setActive("kai")}
           >
-            {t("provider")}
+            Kai
           </button>
         </div>
       </main>
@@ -82,23 +72,23 @@ export default function App() {
       {showCircular && (
         <div className="fixed inset-0 z-50 bg-[#0f172a]/90 flex items-center justify-center">
           <div className="text-center text-slate-300">
-            <p className="text-lg font-bold">{t("circular.title")}</p>
-            <p className="text-sm text-slate-400">{t("circular.subtitle")}</p>
+            <p className="text-lg font-bold">Mesa redonda — ganador de la semana</p>
+            <p className="text-sm text-slate-400">El contenido más compartido del mes</p>
             <button
               className="mt-4 px-4 py-2 bg-[#FF5C35] text-white rounded hover:bg-[#e84e1f]"
               onClick={() => setShowCircular(false)}
             >
-              {t("circular.toggle")}
+              Ver mesa redonda
             </button>
           </div>
         </div>
       )}
 
-      <aside className="w-80 bg-[#1e293b] rounded-xl p-4 order-first md:order-last max-h-[60vh] overflow-y-auto" aria-label={t("panel")}>
+      <aside className="w-80 bg-[#1e293b] rounded-xl p-4 order-first md:order-last max-h-[60vh] overflow-y-auto">
         <h2>
-          {t("progress")}: {progress}%
+          Progreso: {progress}%
         </h2>
-        <p className="text-slate-400 text-sm">{t("help")}</p>
+        <p className="text-slate-400 text-sm">Usa flechas para moverte. Pulsa E cerca de un agente para hablar.</p>
         <ul className="mt-2 text-sm text-slate-300">
           {cfg.map((c) => (
             <li key={c.key}>
@@ -122,13 +112,13 @@ export default function App() {
                   className="mt-2 px-3 py-2 bg-emerald-600 rounded"
                   onClick={() => { bump(); setStep(1); }}
                 >
-                  {t("next")}
+                  Siguiente
                 </button>
               </div>
             )}
             {active === "kai" && (
               <div className="space-y-2">
-                <label className="block text-sm">{t("provider")}</label>
+                <label className="block text-sm">Proveedor</label>
                 <select
                   value={provider}
                   onChange={(e) => setProvider(e.target.value)}
@@ -138,14 +128,13 @@ export default function App() {
                     <option key={p} className="bg-[#1e293b]">{p}</option>
                   ))}
                 </select>
-                <label className="block text-sm">{t("apiKey")}</label>
+                <label className="block text-sm">API Key</label>
                 <input
                   type="password"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   className="w-full bg-[#1e293b] rounded px-2 py-2 text-sm"
                   placeholder="sk-..."
-                  aria-label={t("apiKey")}
                 />
                 <div className="flex gap-2">
                   <button
@@ -153,13 +142,13 @@ export default function App() {
                     className="px-3 py-2 bg-emerald-600 rounded"
                     onClick={saveKey}
                   >
-                    {t("save")}
+                    Guardar
                   </button>
                   <button
                     className="px-3 py-2 bg-sky-600 rounded"
                     onClick={() => bump()}
                   >
-                    {t("test")}
+                    Probar
                   </button>
                 </div>
                 <a
@@ -168,29 +157,29 @@ export default function App() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {t("how")}
+                  ¿Cómo obtengo esto?
                 </a>
                 <button
                   className="text-amber-300 underline text-sm block"
                   onClick={() => setExplain((v) => !v)}
                 >
-                  {t("explain")}
+                  Explícame como si tuviera 10 años
                 </button>
                 {explain && <p className="text-sm text-slate-200">Es como la contraseña de tu robot para hablar con la IA.</p>}
-                <p className="text-xs text-slate-400">{t("saved")}</p>
+                <p className="text-xs text-slate-400">Guardado cifrado (Web Crypto) + localStorage</p>
                 <p className="text-xs">Step: {step}</p>
               </div>
             )}
             {active === "luna" && <p>Escaneo ~/.claude/skills… (mock)</p>}
             {active === "zern" && <p>OAuth local: http://localhost:4321/callback</p>}
             <button className="mt-3 text-sm underline" onClick={() => setActive(null)}>
-              {t("close")}
+              Cerrar
             </button>
           </section>
         )}
         <div className="flex gap-2 mt-4 flex-wrap">
           <button className="px-3 py-2 bg-slate-600 rounded" onClick={() => setActive(null)}>
-            {t("skip")}
+            Saltar por ahora
           </button>
         </div>
         <button
@@ -203,7 +192,7 @@ export default function App() {
             a.click();
           }}
         >
-          {t("export")}
+          Exportar config .env
         </button>
       </aside>
     </div>

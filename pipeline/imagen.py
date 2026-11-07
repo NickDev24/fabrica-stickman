@@ -537,7 +537,10 @@ def armar_prompt(escena: str, accion: str, plano: str = "medio") -> str:
         e["planos"].get(plano, plano),
         e["negativos"],
     ]
-    return ", ".join(p for p in partes if p)
+    out = ", ".join(p for p in partes if p)
+    if len(out) > 600:
+        out = out[:600].rsplit(" ", 1)[0]
+    return out
 
 
 def armar_prompt_dirigido(beat: dict) -> str:
@@ -591,5 +594,8 @@ def armar_prompt_dirigido(beat: dict) -> str:
               f"narrative focus: {foco}; visual object: {prop}; action: {acting}; reveal: {reveal}; motion: {movimiento}",
               f"story context: {contexto}" if contexto else "",
               "black ink, warm white, red accent, absolutely no text, letters, numbers, captions, typography, labels, or watermark; blank uncluttered illustration; no extra limbs"]
-    return ", ".join(p for p in partes if p)
+    out = ", ".join(p for p in partes if p)
+    if len(out) > 600:
+        out = out[:600].rsplit(" ", 1)[0]
+    return out
 
